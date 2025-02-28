@@ -1,6 +1,10 @@
 import { body } from 'express-validator';
 import xss from 'xss';
 
+import { User } from '../../models/User.js'
+
+import errorResponse from "../../utils/errorResponse.js";
+
 export const signupValidation = [
   // Name Validation
   body('name')
@@ -15,7 +19,14 @@ export const signupValidation = [
   .notEmpty().withMessage('Email is required.')
   .isEmail().withMessage('Please enter a valid email address.')
   .normalizeEmail()
-  .customSanitizer(value => xss(value)),
+  .customSanitizer(value => xss(value))
+  .custom(async (email) => {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new errorResponse('User already exists!', 400);
+    }
+    return true;
+  }),
 
   // Password Validation
   body('password')

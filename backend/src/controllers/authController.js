@@ -13,19 +13,7 @@ export const signup = async (req, res, next) => {
 
   try {
     if (!errors.isEmpty()) {
-      const error = new Error('Validation failed');
-      error.statusCode = 400;
-      error.errors = errors.array(); // Hata detaylarını ekle
-      throw error; // veya next(error)
-    }
-
-    if(!name || !email || !password) {
-      throw new errorResponse('All fields are required.', 400);
-    }
-
-    const userAlreadyExists = await User.findOne({email});
-    if (userAlreadyExists) {
-      throw new errorResponse('User already exists!', 400);
+      next(new errorResponse('Validation failed!', 400, errors.array()));
     }
 
     const generatedSalt = await bcrypt.genSalt(12);
