@@ -6,6 +6,7 @@ import { User } from '../models/User.js';
 import errorResponse from "../utils/errorResponse.js";
 import generateRandomToken from '../utils/generateRandomToken.js'
 import { setJwtCookie } from '../utils/setJwtCookie.js'
+import { sendVerificationEmail } from '../utils/sendEmail.js'
 
 export const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -19,7 +20,7 @@ export const signup = async (req, res, next) => {
     const generatedSalt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, generatedSalt);
 
-    const verificationToken = generateRandomToken();
+    const verificationToken = generateRandomToken(6);
 
     const user = new User({
       name,
@@ -31,6 +32,8 @@ export const signup = async (req, res, next) => {
 
     await user.save();
     setJwtCookie(res, user._id);
+
+    await sendVerificationEmail(user.email, verificationToken);
 
     const { password: _, ...userDataWithoutPassword } = user.toObject();
 
@@ -51,3 +54,26 @@ export const login = async (req, res, next) => {
 export const logout = async (req, res, next) => {
 
 };
+
+export const verifyEmail = async (req, res, next) => {
+  const { code } = req.body;
+  console.log(code);
+  try {
+    const user = await User.findOne({
+      verificationToken: code,
+    });
+    if (!user) {
+      return next(new errorResponse('Invalid code.', 400));
+    }
+    if(user.verificationExpiresAt <= Date.now()){
+      return next(new errorResponse('Expired code.', 400));
+    }
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationExpiresAt = undefined;
+
+    await user.save();
+  } catch (error) {
+    next(error);
+  }
+}
