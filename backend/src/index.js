@@ -3,6 +3,8 @@ import dotenv from 'dotenv'
 
 import { connectDb } from './lib/db.js'
 
+import errorHandler from "./middlewares/errorHandler";
+
 import authRoutes from './routes/authRoutes.js'
 
 dotenv.config();
@@ -10,7 +12,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use('/api/auth', authRoutes)
+app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
