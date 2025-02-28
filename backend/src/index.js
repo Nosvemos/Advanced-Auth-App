@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 
 import { connectDb } from './lib/db.js'
 
-import errorHandler from "./middlewares/errorHandler";
+import errorHandler from "./middlewares/errorHandler.js";
 
 import authRoutes from './routes/authRoutes.js'
 
