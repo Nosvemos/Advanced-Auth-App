@@ -51,8 +51,12 @@ export const login = async (req, res, next) => {
 
 };
 
-export const logout = async (req, res, next) => {
-
+export const logout = (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({
+    success: true,
+    message: 'Successfully logged out!'
+  });
 };
 
 export const verifyEmail = async (req, res, next) => {
