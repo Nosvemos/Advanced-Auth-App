@@ -6,7 +6,7 @@ import { User } from '../models/User.js';
 import errorResponse from "../utils/errorResponse.js";
 import generateRandomToken from '../utils/generateRandomToken.js'
 import { setJwtCookie } from '../utils/setJwtCookie.js'
-import { sendVerificationEmail } from '../utils/sendEmail.js'
+import { sendVerificationEmail, sendWelcomeEmail } from '../utils/sendEmail.js'
 
 export const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -73,6 +73,17 @@ export const verifyEmail = async (req, res, next) => {
     user.verificationExpiresAt = undefined;
 
     await user.save();
+
+    await sendWelcomeEmail(user.email, user.name);
+
+    res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+      user: {
+        ...user._doc,
+        password: undefined,
+      },
+    });
   } catch (error) {
     next(error);
   }
