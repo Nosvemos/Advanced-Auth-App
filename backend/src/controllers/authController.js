@@ -13,7 +13,7 @@ export const signup = async (req, res, next) => {
 
   try {
     if (!errors.isEmpty()) {
-      next(new errorResponse('Validation failed!', 400, errors.array()));
+      return next(new errorResponse('Validation failed!', 400, errors.array()));
     }
 
     const generatedSalt = await bcrypt.genSalt(12);
@@ -32,8 +32,7 @@ export const signup = async (req, res, next) => {
     await user.save();
     setJwtCookie(res, user._id);
 
-    const userDataWithoutPassword = user.toObject();
-    delete userDataWithoutPassword.password; // Exclude password from the response
+    const { password: _, ...userDataWithoutPassword } = user.toObject();
 
     res.status(201).json({
       success: true,
