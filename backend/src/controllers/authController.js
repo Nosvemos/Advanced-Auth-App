@@ -41,14 +41,46 @@ export const signup = async (req, res, next) => {
       success: true,
       message: 'User successfully created!',
       user: userDataWithoutPassword
-    })
+    });
   } catch (error) {
     next(error);
   }
 };
 
 export const login = async (req, res, next) => {
+  const { email, password } = req.body;
+  const errors = validationResult(req);
 
+  try {
+    if (!errors.isEmpty()) {
+      return next(new errorResponse('Validation failed!', 400, errors.array()));
+    }
+
+    const user = await User.findOne({email});
+    if (!user) {
+      return next(new errorResponse('Invalid credentials.', 400));
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if(!isPasswordValid) {
+      return next(new errorResponse('Invalid credentials.', 400));
+    }
+
+    setJwtCookie(res, user._id);
+
+    user.lastLogin = new Date();
+    await user.save();
+
+    const { password: _, ...userDataWithoutPassword } = user.toObject();
+
+    res.status(201).json({
+      success: true,
+      message: 'User successfully logged in!',
+      user: userDataWithoutPassword
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logout = (req, res) => {
