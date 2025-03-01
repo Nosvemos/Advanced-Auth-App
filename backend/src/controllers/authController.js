@@ -75,7 +75,7 @@ export const login = async (req, res, next) => {
     setJwtCookie(res, user._id);
 
     const { password: _, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
-    
+
     res.status(201).json({
       success: true,
       message: 'User successfully logged in!',
