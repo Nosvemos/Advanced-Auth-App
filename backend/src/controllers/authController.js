@@ -10,16 +10,14 @@ import { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail, sendRe
 
 export const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
+
   const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new errorResponse('Validation failed!', 400, errors.array()));
+  }
 
   try {
-    if (!errors.isEmpty()) {
-      return next(new errorResponse('Validation failed!', 400, errors.array()));
-    }
-
-    const generatedSalt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(password, generatedSalt);
-
+    const hashedPassword = await bcrypt.hash(password, 12);
     const verificationToken = generateRandomToken(6);
 
     const user = new User({
@@ -49,13 +47,13 @@ export const signup = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
+
   const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new errorResponse('Validation failed!', 400, errors.array()));
+  }
 
   try {
-    if (!errors.isEmpty()) {
-      return next(new errorResponse('Validation failed!', 400, errors.array()));
-    }
-
     const user = await User.findOne({email});
     if (!user) {
       return next(new errorResponse('Invalid credentials.', 400));
@@ -93,7 +91,12 @@ export const logout = (req, res) => {
 
 export const verifyEmail = async (req, res, next) => {
   const { code } = req.body;
-  console.log(code);
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new errorResponse('Validation failed!', 400, errors.array()));
+  }
+
   try {
     const user = await User.findOne({
       verificationToken: code,
@@ -126,6 +129,12 @@ export const verifyEmail = async (req, res, next) => {
 
 export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new errorResponse('Validation failed!', 400, errors.array()));
+  }
+
   try {
     const user = await User.findOne({email});
     if (!user) {
@@ -153,10 +162,15 @@ export const forgotPassword = async (req, res, next) => {
 };
 
 export const resetPassword = async (req, res, next) => {
-  try {
-    const { token } = req.params;
-    const { password } = req.body;
+  const { token } = req.params;
+  const { password } = req.body;
 
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return next(new errorResponse('Validation failed!', 400, errors.array()));
+  }
+
+  try {
     const user = await User.findOne({
       resetPasswordToken: token,
     });
