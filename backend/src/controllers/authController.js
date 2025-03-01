@@ -148,6 +148,6 @@ export const forgotPassword = async (req, res, next) => {
     });
 
   } catch (error) {
-
+    next(error);
   }
 };
