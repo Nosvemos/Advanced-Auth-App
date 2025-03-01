@@ -133,7 +133,7 @@ export const forgotPassword = async (req, res, next) => {
     }
 
     user.resetPasswordToken = generateRandomToken(20, false);
-    user.resetPasswordExpiresAt = Date.now() + 24 * 60 * 60 * 1000 // 1 day
+    user.resetPasswordExpiresAt = Date.now() + 60 * 60 * 1000 // 1 hour
 
     await user.save();
 
