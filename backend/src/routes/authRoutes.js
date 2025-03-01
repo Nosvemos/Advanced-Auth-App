@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signup, login, logout, verifyEmail, forgotPassword, resetPassword } from '../controllers/authController.js'
+import { signup, login, logout, verifyEmail, forgotPassword, resetPassword, checkAuth } from '../controllers/authController.js'
 
 import {
   signupValidation, loginValidation, verifyEmailValidation, resetPasswordValidation, forgotPasswordValidation,
@@ -21,6 +21,6 @@ router.post('/forgot-password', forgotPasswordValidation, forgotPassword);
 
 router.post('/reset-password/:token', resetPasswordValidation, resetPassword);
 
-router.get('/check-auth', verifyToken)
+router.get('/check-auth', verifyToken, checkAuth)
 
 export default router;

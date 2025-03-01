@@ -196,3 +196,21 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
+
+export const checkAuth = async (req, res, next) => {
+  try {
+    const user = User.findById(req.userId);
+    if (!user) {
+      return next(new errorResponse('Invalid user id!', 403));
+    }
+
+    const { password: _, ...userDataWithoutPassword } = user.toObject();
+
+    res.status(200).json({
+      success: true,
+      user: userDataWithoutPassword
+    });
+  } catch (error) {
+    next (error);
+  }
+}
