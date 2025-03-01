@@ -33,8 +33,7 @@ export const signup = async (req, res, next) => {
 
     await sendVerificationEmail(user.email, user.name, emailVerificationToken);
 
-    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
-
+    const { password: _, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
     res.status(201).json({
       success: true,
       message: 'User successfully created!',
@@ -75,8 +74,8 @@ export const login = async (req, res, next) => {
 
     setJwtCookie(res, user._id);
 
-    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
-
+    const { password: _, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
+    
     res.status(201).json({
       success: true,
       message: 'User successfully logged in!',
