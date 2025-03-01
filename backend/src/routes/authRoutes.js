@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { signup, login, logout, verifyEmail, resetPassword } from '../controllers/authController.js'
+import { signup, login, logout, verifyEmail, forgotPassword } from '../controllers/authController.js'
 
 import { signupValidation, loginValidation } from '../middlewares/validators/authValidators.js';
 
@@ -14,6 +14,6 @@ router.post('/logout', logout);
 
 router.post('/verify-email', verifyEmail);
 
-router.post('/reset-password', resetPassword)
+router.post('/forgot-password', forgotPassword);
 
 export default router;
