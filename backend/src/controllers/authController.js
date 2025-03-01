@@ -179,6 +179,6 @@ export const resetPassword = async (req, res, next) => {
       message: "Password reset successfully!"
     });
   } catch (error) {
-
+    next(error);
   }
 };
