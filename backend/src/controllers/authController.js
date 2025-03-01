@@ -18,27 +18,27 @@ export const signup = async (req, res, next) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 12);
-    const verificationToken = generateRandomToken(6);
+    const emailVerificationToken = generateRandomToken(6);
 
     const user = new User({
       name,
       email,
       password: hashedPassword,
-      verificationToken,
-      verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000 // 1 day
+      verificationToken: emailVerificationToken,
+      verificationTokenExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
     });
 
     await user.save();
     setJwtCookie(res, user._id);
 
-    await sendVerificationEmail(user.email, user.name, verificationToken);
+    await sendVerificationEmail(user.email, user.name, emailVerificationToken);
 
-    const { password: _, ...userDataWithoutPassword } = user.toObject();
+    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
 
     res.status(201).json({
       success: true,
       message: 'User successfully created!',
-      user: userDataWithoutPassword
+      user: safeUser
     });
   } catch (error) {
     next(error);
@@ -54,7 +54,9 @@ export const login = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findOne({email});
+    const user = await User.findOne({
+      email
+    });
     if (!user) {
       return next(new errorResponse('Invalid credentials.', 400));
     }
@@ -64,17 +66,21 @@ export const login = async (req, res, next) => {
       return next(new errorResponse('Invalid credentials.', 400));
     }
 
-    setJwtCookie(res, user._id);
+    if (!user.isVerified) {
+      return next(new errorResponse('Email not verified.', 403));
+    }
 
     user.lastLogin = new Date();
     await user.save();
 
-    const { password: _, ...userDataWithoutPassword } = user.toObject();
+    setJwtCookie(res, user._id);
+
+    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
 
     res.status(201).json({
       success: true,
       message: 'User successfully logged in!',
-      user: userDataWithoutPassword
+      user: safeUser
     });
   } catch (error) {
     next(error);
@@ -99,28 +105,28 @@ export const verifyEmail = async (req, res, next) => {
 
   try {
     const user = await User.findOne({
-      verificationToken: code,
+      verificationToken: code
     });
     if (!user) {
       return next(new errorResponse('Invalid code.', 400));
     }
-    if(user.verificationExpiresAt <= Date.now()){
+    if(user.verificationTokenExpiresAt <= Date.now()){
       return next(new errorResponse('Expired code.', 400));
     }
     user.isVerified = true;
     user.verificationToken = undefined;
-    user.verificationExpiresAt = undefined;
+    user.verificationTokenExpiresAt = undefined;
 
     await user.save();
 
     await sendWelcomeEmail(user.email, user.name);
 
-    const { password: _, ...userDataWithoutPassword } = user.toObject();
+    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
 
     res.status(200).json({
       success: true,
       message: "Email verified successfully",
-      user: userDataWithoutPassword
+      user: safeUser
     });
   } catch (error) {
     next(error);
@@ -136,24 +142,29 @@ export const forgotPassword = async (req, res, next) => {
   }
 
   try {
-    const user = await User.findOne({email});
-    if (!user) {
-      return next(new errorResponse('There is no account related to this email.', 400));
+    let safeUser = null;
+
+    const user = await User.findOne({
+      email
+    });
+    if (user) {
+      user.resetPasswordToken = generateRandomToken(20, false);
+      user.resetPasswordTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+      await user.save();
+
+      await sendResetPasswordEmail(user.email, user.name, user.resetPasswordToken);
+
+      safeUser = { ...user.toObject() };
+      delete safeUser.password;
+      delete safeUser.verificationToken;
+      delete safeUser.resetPasswordToken;
     }
-
-    user.resetPasswordToken = generateRandomToken(20, false);
-    user.resetPasswordExpiresAt = Date.now() + 60 * 60 * 1000 // 1 hour
-
-    await user.save();
-
-    await sendResetPasswordEmail(user.email, user.name, user.resetPasswordToken);
-
-    const { password: _, ...userDataWithoutPassword } = user.toObject();
 
     res.status(200).json({
       success: true,
-      message: "Password reset successfully",
-      user: userDataWithoutPassword
+      message: "Password reset request send successfully",
+      user: safeUser
     });
 
   } catch (error) {
@@ -177,13 +188,13 @@ export const resetPassword = async (req, res, next) => {
     if (!user) {
       return next(new errorResponse('Invalid code.', 400));
     }
-    if(user.resetPasswordExpiresAt <= Date.now()){
+    if(user.resetPasswordTokenExpiresAt <= Date.now()){
       return next(new errorResponse('Expired code.', 400));
     }
 
     user.password = await bcrypt.hash(password, 12);
     user.resetPasswordToken = undefined;
-    user.resetPasswordExpiresAt = undefined;
+    user.resetPasswordTokenExpiresAt = undefined;
     await user.save()
 
     await sendResetPasswordSuccessEmail(user.email, user.name);
@@ -199,18 +210,18 @@ export const resetPassword = async (req, res, next) => {
 
 export const checkAuth = async (req, res, next) => {
   try {
-    const user = User.findById(req.userId);
+    const user = await User.findById(req.userId);
     if (!user) {
       return next(new errorResponse('Invalid user id!', 403));
     }
 
-    const { password: _, ...userDataWithoutPassword } = user.toObject();
+    const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
 
     res.status(200).json({
       success: true,
-      user: userDataWithoutPassword
+      user: safeUser
     });
   } catch (error) {
     next (error);
   }
-}
+};
