@@ -20,7 +20,7 @@ router.post('/signup', authLimiter, signupValidation, signup);
 
 router.post('/login', authLimiter, loginValidation, login);
 
-router.post('/logout', logout);
+router.post('/logout', verifyToken, logout);
 
 router.post('/verify-email', authLimiter, verifyEmailValidation, verifyEmail);
 
