@@ -1,8 +1,15 @@
+import { config } from 'dotenv'
+
 import { mailtrapClient, mailtrapSender } from '../lib/mailtrap/mailtrap.js'
 import {
+  PASSWORD_RESET_REQUEST_TEMPLATE,
   VERIFICATION_EMAIL_TEMPLATE,
   WELCOME_EMAIL_TEMPLATE,
 } from '../lib/mailtrap/emailTemplates.js'
+
+config();
+
+const clientUrl = process.env.CLIENT_URL;
 
 export const sendVerificationEmail = async (email, verificationToken) => {
   const recipientEmail = [{ email }];
@@ -39,5 +46,20 @@ export const sendWelcomeEmail = async (email, name) => {
     }
   } catch (error) {
     throw new Error(`Error while sending welcome email: ${error}`);
+  }
+};
+
+export const sendResetPasswordEmail = async (email, verificationToken) => {
+  const recipientEmail = [{ email }];
+  const resetURL = `${clientUrl}/reset-password/${verificationToken}`;
+  try {
+    const response = await mailtrapClient.send({
+      from: mailtrapSender,
+      to: recipientEmail,
+      subject: "Reset your password!",
+      html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
+    })
+  } catch (error) {
+    throw new Error(`Error while sending reset password email: ${error}`);
   }
 };

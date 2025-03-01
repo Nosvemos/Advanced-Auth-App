@@ -6,7 +6,7 @@ import { User } from '../models/User.js';
 import errorResponse from "../utils/errorResponse.js";
 import generateRandomToken from '../utils/generateRandomToken.js'
 import { setJwtCookie } from '../utils/setJwtCookie.js'
-import { sendVerificationEmail, sendWelcomeEmail } from '../utils/sendEmail.js'
+import { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail } from '../utils/sendEmail.js'
 
 export const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -112,15 +112,42 @@ export const verifyEmail = async (req, res, next) => {
 
     await sendWelcomeEmail(user.email, user.name);
 
+    const { password: _, ...userDataWithoutPassword } = user.toObject();
+
     res.status(200).json({
       success: true,
       message: "Email verified successfully",
-      user: {
-        ...user._doc,
-        password: undefined,
-      },
+      user: userDataWithoutPassword
     });
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const resetPassword = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({email});
+    if (!user) {
+      return next(new errorResponse('There is no account related to this email.', 400));
+    }
+
+    user.resetPasswordToken = generateRandomToken(20, false);
+    user.resetPasswordExpiresAt = Date.now() + 24 * 60 * 60 * 1000 // 1 day
+
+    await user.save();
+
+    await sendResetPasswordEmail(user.email, user.resetPasswordToken);
+
+    const { password: _, ...userDataWithoutPassword } = user.toObject();
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+      user: userDataWithoutPassword
+    });
+
+  } catch (error) {
+
+  }
+};
