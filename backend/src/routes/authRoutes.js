@@ -5,6 +5,7 @@ import { signup, login, logout, verifyEmail, forgotPassword, resetPassword } fro
 import {
   signupValidation, loginValidation, verifyEmailValidation, resetPasswordValidation, forgotPasswordValidation,
 } from '../middlewares/validators/authValidators.js'
+import { verifyToken } from '../middlewares/verifyToken.js'
 
 const router = express.Router();
 
@@ -19,5 +20,7 @@ router.post('/verify-email', verifyEmailValidation, verifyEmail);
 router.post('/forgot-password', forgotPasswordValidation, forgotPassword);
 
 router.post('/reset-password/:token', resetPasswordValidation, resetPassword);
+
+router.get('/check-auth', verifyToken)
 
 export default router;
