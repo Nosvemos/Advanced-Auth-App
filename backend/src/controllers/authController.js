@@ -174,6 +174,10 @@ export const forgotPassword = async (req, res, next) => {
     const user = await User.findOne({
       email
     });
+    if(user && !user.isVerified){
+      return next(new errorResponse('Your account is not verified.', 400));
+    }
+
     if (user) {
       user.resetPasswordToken = generateRandomToken(20, false);
       user.resetPasswordTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour

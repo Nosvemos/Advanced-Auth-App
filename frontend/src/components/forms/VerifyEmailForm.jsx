@@ -56,7 +56,7 @@ const VerifyEmailForm = () => {
       <div className="form-control pt-3">
         {isLoading ?
           <Loader className=' animate-spin mx-auto' size={24} /> :
-          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Verify</button>
+          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Submit</button>
         }
       </div>
     </form>
