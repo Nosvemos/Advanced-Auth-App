@@ -36,6 +36,19 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  logout: async () => {
+    set({ isLoading: true });
+    try {
+      await axiosInstance.post(`/auth/logout`);
+      set({ user: null, isAuthenticated: false });
+      toast.success('You logged out successfully.');
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set ({ isLoading: false });
+    }
+  },
+
   verifyEmail: async (code) => {
     set({ isLoading: true });
     try {
