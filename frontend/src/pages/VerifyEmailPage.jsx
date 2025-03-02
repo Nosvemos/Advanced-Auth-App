@@ -19,7 +19,7 @@ const VerifyEmailPage = () => {
             className="link rounded-md shadow-xl ml-1"
             onClick={() => resendEmail(user?.email)}
           >
-            Resend email
+            Resend it
           </button>
         </p>
       </Card>
