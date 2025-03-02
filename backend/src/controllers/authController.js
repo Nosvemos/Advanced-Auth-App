@@ -65,10 +65,6 @@ export const login = async (req, res, next) => {
       return next(new errorResponse('Invalid credentials.', 400));
     }
 
-    if (!user.isVerified) {
-      return next(new errorResponse('Email not verified.', 403));
-    }
-
     user.lastLogin = new Date();
     await user.save();
 
