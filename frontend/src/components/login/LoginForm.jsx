@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Loader } from 'lucide-react';
+import { Mail, Lock, Loader } from 'lucide-react';
 
-import FormInput from '../FormInput.jsx';
-import PasswordStrengthMeter from "./PasswordStrengthMeter.jsx";
+import FormInput from '../FormInput';
 
 import { useAuthStore } from "../../store/AuthStore";
 
-const SignupForm = () => {
+const LoginForm = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
     email: '',
     password: ''
   });
 
-  const { signup, isLoading } = useAuthStore();
+  const { login, isLoading } = useAuthStore();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,34 +21,18 @@ const SignupForm = () => {
     }));
   };
 
-  const handleSignUp = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      await signup(formData.fullName, formData.email, formData.password);
+      await login(formData.email, formData.password);
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <form className="w-full" onSubmit={handleSignUp}>
-      <FormInput
-        icon={<User/>}
-        type="text"
-        name="fullName"
-        placeholder="Full Name"
-        pattern="[A-Za-z\s]+"
-        minlength="3"
-        maxlength="30"
-        required='required'
-        title="Must be more than 3 and less than 30 characters, including only letters."
-        validatorHint='Enter valid full name.'
-        validatorHidden='hidden'
-        onChange={handleChange}
-        disabled={isLoading}
-      />
-
+    <form className="w-full" onSubmit={handleLogin}>
       <FormInput
         icon={<Mail/>}
         type="email"
@@ -77,16 +59,14 @@ const SignupForm = () => {
         onChange={handleChange}
         disabled={isLoading}
       />
-
-      <PasswordStrengthMeter password={formData.password} />
       <div className="form-control pt-6">
         {isLoading ?
           <Loader className=' animate-spin mx-auto' size={24} /> :
-          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Sign up</button>
+          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Log in</button>
         }
       </div>
     </form>
   );
 };
 
-export default SignupForm;
+export default LoginForm;

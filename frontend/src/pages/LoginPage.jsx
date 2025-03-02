@@ -1,7 +1,12 @@
+import React from 'react';
+import LoginCard from '../components/login/LoginCard';
+
 const LoginPage = () => {
   return (
-    <div>LoginPage</div>
-  )
-}
+    <div className="min-h-screen flex items-center justify-center">
+      <LoginCard />
+    </div>
+  );
+};
 
-export default LoginPage
+export default LoginPage;
