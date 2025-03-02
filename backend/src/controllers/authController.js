@@ -13,7 +13,7 @@ export const signup = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new errorResponse('Validation failed!', 400, errors.array()));
+    return next(new errorResponse(errors.array()[0], 400, errors.array()));
   }
 
   try {
@@ -49,7 +49,7 @@ export const login = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new errorResponse('Validation failed!', 400, errors.array()));
+    return next(new errorResponse(errors.array()[0], 400, errors.array()));
   }
 
   try {
@@ -95,7 +95,7 @@ export const verifyEmail = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new errorResponse('Validation failed!', 400, errors.array()));
+    return next(new errorResponse(errors.array()[0], 400, errors.array()));
   }
 
   try {
@@ -165,7 +165,7 @@ export const forgotPassword = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return next(new errorResponse('Validation failed!', 400, errors.array()));
+    return next(new errorResponse(errors.array()[0], 400, errors.array()));
   }
 
   try {
@@ -208,7 +208,6 @@ export const validateResetToken = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors);
     return next(new errorResponse('Token failed!', 400, errors.array()));
   }
 
@@ -231,8 +230,7 @@ export const resetPassword = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors);
-    return next(new errorResponse('Validation failed!', 400, errors.array()));
+    return next(new errorResponse(errors.array()[0], 400, errors.array()));
   }
 
   try {
