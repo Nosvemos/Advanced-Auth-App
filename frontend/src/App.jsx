@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 
-import { Loader } from 'lucide-react';
-
 import HomePage from './pages/HomePage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
@@ -12,6 +10,8 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
 import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 
 import { useAuthStore } from "./store/authStore";
+
+import Loading from './components/Loading.jsx'
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -40,13 +40,17 @@ const RedirectAuthenticatedUser = ({ children }) => {
 };
 
 const VerifyEmailRoute = ({ children }) => {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, isCheckingAuth } = useAuthStore();
+
+  if (isCheckingAuth) {
+    return <Loading />;
+  }
 
   if (!isAuthenticated) {
     return <Navigate to='/login' replace />;
   }
 
-  if (user.isVerified) {
+  if (user?.isVerified) {
     return <Navigate to='/' replace />;
   }
 
@@ -61,9 +65,7 @@ const App = () => {
   }, [checkAuth]);
 
   if (isCheckingAuth) return (
-    <div className="flex items-center justify-center h-screen">
-      <Loader className="size-10 animate-spin" />
-    </div>
+    <Loading/>
   );
 
   return (
