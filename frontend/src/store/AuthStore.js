@@ -62,6 +62,18 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  resendEmail: async (email) => {
+    set({ isLoading: true });
+    try {
+      const response = await axiosInstance.post(`/auth/resend-email`, { email });
+      toast.success('Your email resent successfully.');
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set ({ isLoading: false });
+    }
+  },
+
   checkAuth: async () => {
     set({ isCheckingAuth: true });
     try {

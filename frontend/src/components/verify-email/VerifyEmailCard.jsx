@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link } from "react-router-dom";
 
 import VerifyEmailForm from './VerifyEmailForm.jsx';
 
+import { useAuthStore } from '../../store/AuthStore.js'
+
 const VerifyEmailCard = () => {
+  const { user, resendEmail } = useAuthStore();
+
+  const handleResendEmail = () => {
+    resendEmail(user.email);
+  };
   return (
     <div className="card card-border w-full max-w-md rounded-xl shadow shadow-xl px-10">
       <div className="card-body items-center text-center">
@@ -12,9 +18,7 @@ const VerifyEmailCard = () => {
         <div className='divider'></div>
         <p className="text-center">
           <span>Didn't you get an e-mail? ?</span>
-          <Link to={"/resend-email"} className="link link-neutral-content ml-1">
-            Resend email
-          </Link>
+          <button className="link rounded-md shadow-xl ml-1" onClick={handleResendEmail}>Resend email</button>
         </p>
       </div>
     </div>
