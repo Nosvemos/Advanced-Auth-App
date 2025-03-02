@@ -128,6 +128,38 @@ export const verifyEmail = async (req, res, next) => {
   }
 };
 
+export const resendEmail = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({
+      email
+    });
+    if (!user) {
+      return next(new errorResponse('User can not found.', 404));
+    }
+    if (user.isVerified) {
+      return next(new errorResponse('Your account already verified.', 400));
+    }
+
+    const emailVerificationToken = generateRandomToken(6);
+
+    user.verificationToken = emailVerificationToken;
+    user.verificationTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 1 day
+
+    await user.save();
+
+    await sendVerificationEmail(user.email, user.fullName, emailVerificationToken);
+
+    res.status(200).json({
+      success: true,
+      message: "Email resent successfully"
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export const forgotPassword = async (req, res, next) => {
   const { email } = req.body;
 

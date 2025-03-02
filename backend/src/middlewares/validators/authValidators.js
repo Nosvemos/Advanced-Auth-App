@@ -68,6 +68,16 @@ export const verifyEmailValidation = [
   .customSanitizer(value => xss(value))
 ];
 
+export const resendEmailValidation = [
+  // Email Validation
+  body('email')
+  .trim()
+  .notEmpty().withMessage('Email is required.')
+  .isEmail().withMessage('Not valid email address.')
+  .normalizeEmail()
+  .customSanitizer(value => xss(value)),
+];
+
 export const forgotPasswordValidation = [
   // Email Validation
   body('email')
