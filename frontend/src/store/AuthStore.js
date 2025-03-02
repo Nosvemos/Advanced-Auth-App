@@ -7,6 +7,7 @@ export const useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  isValidToken: null,
   isCheckingAuth: true,
   message: null,
 
@@ -108,6 +109,19 @@ export const useAuthStore = create((set, get) => ({
       set({ user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
     } catch (error) {
       set({ isCheckingAuth: false, isAuthenticated: false });
+    }
+  },
+
+  validateResetToken: async (token) => {
+    set({ isLoading: true });
+    try {
+      const response = await axiosInstance.post(`/auth/validate-reset-token`, { token });
+      return response.data.isValid;
+    } catch (error) {
+      toast.error(error.response.data.message);
+      return false;
+    } finally {
+      set({ isLoading: false });
     }
   },
 }));

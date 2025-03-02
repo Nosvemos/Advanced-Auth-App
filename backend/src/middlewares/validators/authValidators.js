@@ -119,3 +119,13 @@ export const resetPasswordValidation = [
   })
   .customSanitizer(value => xss(value))
 ];
+
+export const resetTokenValidation = [
+  body('token')
+  .trim()
+  .notEmpty().withMessage('Token is required.')
+  .isLength({ min: 20, max: 20 }).withMessage('Token must be exactly 20 characters.')
+  .matches(/^[a-z0-9]+$/)
+  .withMessage('Code must contain only lowercase letters and numbers.')
+  .customSanitizer(value => xss(value)),
+];

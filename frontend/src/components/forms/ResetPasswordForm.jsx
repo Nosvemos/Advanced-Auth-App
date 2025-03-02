@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Lock, Loader } from 'lucide-react';
 import { toast } from 'react-toastify'
@@ -13,11 +13,25 @@ const ResetPasswordCard = () => {
     password: '',
     confirmPassword: ''
   });
+  const [isValidToken, setIsValidToken] = useState(false);
   const { token } = useParams();
 
-  const { resetPassword, isLoading } = useAuthStore();
+  const { resetPassword, validateResetToken, isLoading } = useAuthStore();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const isValid = await validateResetToken(token);
+      if (isValid) {
+        setIsValidToken(true);
+      } else {
+        navigate('/forgot-password');
+      }
+    };
+
+    checkToken();
+  }, [token, navigate, validateResetToken]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,6 +57,14 @@ const ResetPasswordCard = () => {
       console.error(error);
     }
   };
+
+  if (isLoading) {
+    return <Loader className="size-10 animate-spin" />
+  }
+
+  if (!isValidToken) {
+    return null;
+  }
 
   return (
     <form className="w-full" onSubmit={handleResetPassword}>

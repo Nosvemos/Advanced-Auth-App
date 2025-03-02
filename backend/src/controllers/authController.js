@@ -203,6 +203,28 @@ export const forgotPassword = async (req, res, next) => {
   }
 };
 
+export const validateResetToken = async (req, res, next) => {
+  const { token } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return next(new errorResponse('Token failed!', 400, errors.array()));
+  }
+
+  try {
+    const user = await User.findOne({ resetPasswordToken: token });
+
+    if (!user || user.resetPasswordTokenExpiresAt < Date.now()) {
+      return res.json({ isValid: false });
+    }
+
+    res.json({ isValid: true });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const resetPassword = async (req, res, next) => {
   const { token } = req.params;
   const { password } = req.body;
