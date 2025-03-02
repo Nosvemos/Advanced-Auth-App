@@ -12,7 +12,7 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
             <h1 style="margin: 0; font-weight: 400; font-size: 24px;">Verify Your Email Address</h1>
         </div>
         <div style="padding: 40px 30px; line-height: 1.6; text-align: center;">
-            <p style="font-size: 20px;">Hello <strong>{name}</strong>,</p>
+            <p style="font-size: 20px;">Hello <strong>{fullName}</strong>,</p>
         
             <p style="font-size: 16px;">Please use the verification code below to complete your email verification:</p>
             
@@ -47,7 +47,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
             <h1 style="margin: 0; font-weight: 600; font-size: 24px;">Welcome to Advanced Auth App!</h1>
         </div>
         <div style="padding: 40px 30px; line-height: 1.6;">
-            <p style="font-size: 20px;">Hello <strong>{name}</strong>,</p>
+            <p style="font-size: 20px;">Hello <strong>{fullName}</strong>,</p>
             
             <p>Your account has been successfully verified and is ready to use.</p>
         </div>
@@ -73,7 +73,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
             <h1 style="margin: 0; font-weight: 400; font-size: 24px;">Reset Your Password</h1>
         </div>
         <div style="padding: 40px 30px; line-height: 1.6; text-align: center;">
-            <p style="font-size: 20px;">Hello <strong>{name}</strong>,</p>
+            <p style="font-size: 20px;">Hello <strong>{fullName}</strong>,</p>
             
             <p style="font-size: 16px;">Please use the link below to complete your password reset:</p>
             
@@ -108,7 +108,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
             <h1 style="margin: 0; font-weight: 600; font-size: 24px;">Password Reset Successful</h1>
         </div>
         <div style="padding: 40px 30px; line-height: 1.6;">
-            <p style="font-size: 20px;">Hello <strong>{name}</strong>,</p>
+            <p style="font-size: 20px;">Hello <strong>{fullName}</strong>,</p>
             
             <p>Your password has been successfully reset.</p>
         </div>

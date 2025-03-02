@@ -9,7 +9,7 @@ import { setJwtCookie } from '../utils/setJwtCookie.js'
 import { sendVerificationEmail, sendWelcomeEmail, sendResetPasswordEmail, sendResetPasswordSuccessEmail } from '../utils/sendEmail.js'
 
 export const signup = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { fullName, email, password } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -21,7 +21,7 @@ export const signup = async (req, res, next) => {
     const emailVerificationToken = generateRandomToken(6);
 
     const user = new User({
-      name,
+      fullName,
       email,
       password: hashedPassword,
       verificationToken: emailVerificationToken,
@@ -31,7 +31,7 @@ export const signup = async (req, res, next) => {
     await user.save();
     setJwtCookie(res, user._id);
 
-    await sendVerificationEmail(user.email, user.name, emailVerificationToken);
+    await sendVerificationEmail(user.email, user.fullName, emailVerificationToken);
 
     const { password: _, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
     res.status(201).json({
@@ -118,7 +118,7 @@ export const verifyEmail = async (req, res, next) => {
 
     await user.save();
 
-    await sendWelcomeEmail(user.email, user.name);
+    await sendWelcomeEmail(user.email, user.fullName);
 
     const { password, verificationToken, resetPasswordToken, ...safeUser } = user.toObject();
 
@@ -152,7 +152,7 @@ export const forgotPassword = async (req, res, next) => {
 
       await user.save();
 
-      await sendResetPasswordEmail(user.email, user.name, user.resetPasswordToken);
+      await sendResetPasswordEmail(user.email, user.fullName, user.resetPasswordToken);
 
       safeUser = { ...user.toObject() };
       delete safeUser.password;
@@ -196,7 +196,7 @@ export const resetPassword = async (req, res, next) => {
     user.resetPasswordTokenExpiresAt = undefined;
     await user.save()
 
-    await sendResetPasswordSuccessEmail(user.email, user.name);
+    await sendResetPasswordSuccessEmail(user.email, user.fullName);
 
     res.status(200).json({
       success: true,

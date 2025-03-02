@@ -6,11 +6,11 @@ import { User } from '../../models/User.js';
 import errorResponse from "../../utils/errorResponse.js";
 
 export const signupValidation = [
-  // Name Validation
-  body('name')
+  // Full name Validation
+  body('fullName')
   .trim()
-  .notEmpty().withMessage('Name is required.')
-  .matches(/^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/).withMessage('Name can only contain letters and spaces.')
+  .notEmpty().withMessage('Full name is required.')
+  .matches(/^[a-zA-ZğüşıöçĞÜŞİÖÇ\s]+$/).withMessage('Full name can only contain letters and spaces.')
   .customSanitizer(value => xss(value)),
 
   // Email Validation
