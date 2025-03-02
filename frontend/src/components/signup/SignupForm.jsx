@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, Mail, Lock, Loader } from 'lucide-react';
 
 import FormInput from '../FormInput.jsx';
-import PasswordStrengthMeter from "./PasswordStrengthMeter.jsx";
+import PasswordStrengthMeter from "../PasswordStrengthMeter.jsx";
 
 import { useAuthStore } from "../../store/AuthStore";
 

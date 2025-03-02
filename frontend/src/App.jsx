@@ -8,6 +8,8 @@ import HomePage from './pages/HomePage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import VerifyEmailPage from './pages/VerifyEmailPage.jsx'
+import ForgotPasswordPage from './pages/ForgotPasswordPage.jsx'
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx'
 
 import { useAuthStore } from "./store/authStore";
 
@@ -88,6 +90,22 @@ const App = () => {
           element={
             <RedirectAuthenticatedUser>
               <LoginPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
+        <Route
+          path='/forgot-password'
+          element={
+            <RedirectAuthenticatedUser>
+              <ForgotPasswordPage />
+            </RedirectAuthenticatedUser>
+          }
+        />
+        <Route
+          path='/reset-password/:token'
+          element={
+            <RedirectAuthenticatedUser>
+              <ResetPasswordPage />
             </RedirectAuthenticatedUser>
           }
         />

@@ -97,6 +97,7 @@ export const resetPasswordValidation = [
   .matches(/^[a-z0-9]+$/)
   .withMessage('Code must contain only lowercase letters and numbers.')
   .customSanitizer(value => xss(value)),
+
   // Password Validation
   body('password')
   .trim()
@@ -104,5 +105,17 @@ export const resetPasswordValidation = [
   .isLength({ min: 6 }).withMessage('Password must be at least 6 characters.')
   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-zğüşıöçĞÜŞİÖÇ\d@$!%*?&]+$/)
   .withMessage('Password must contain at least: 1 uppercase, 1 lowercase, 1 number, and 1 special character.')
+  .customSanitizer(value => xss(value)),
+
+  // Confirm Password Validation
+  body('confirmPassword')
+  .trim()
+  .notEmpty().withMessage('Confirm password is required.')
+  .custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new errorResponse('Confirm password does not match.', 400);
+    }
+    return true;
+  })
   .customSanitizer(value => xss(value))
 ];

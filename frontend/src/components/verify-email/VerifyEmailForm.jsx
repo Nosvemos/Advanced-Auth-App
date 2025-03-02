@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import { Loader } from 'lucide-react'
 
 import VerifyEmailInputBox from './VerifyEmailInputBox';
 
 import { useAuthStore } from "../../store/AuthStore";
-import { toast } from 'react-toastify'
 
 const VerifyEmailForm = () => {
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);

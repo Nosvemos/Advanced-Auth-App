@@ -65,8 +65,32 @@ export const useAuthStore = create((set, get) => ({
   resendEmail: async (email) => {
     set({ isLoading: true });
     try {
-      const response = await axiosInstance.post(`/auth/resend-email`, { email });
+      await axiosInstance.post(`/auth/resend-email`, { email });
       toast.success('Your email resent successfully.');
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set ({ isLoading: false });
+    }
+  },
+
+  forgotPassword: async (email) => {
+    set({ isLoading: true });
+    try {
+      await axiosInstance.post(`/auth/forgot-password`, { email });
+      toast.success('Password reset email sent to your email successfully.');
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      set ({ isLoading: false });
+    }
+  },
+
+  resetPassword: async (token, password, confirmPassword) => {
+    set({ isLoading: true });
+    try {
+      await axiosInstance.post(`/auth/reset-password/${token}`, { password, confirmPassword });
+      toast.success('Your password has been changed successfully.');
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {

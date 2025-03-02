@@ -205,6 +205,7 @@ export const resetPassword = async (req, res, next) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors);
     return next(new errorResponse('Validation failed!', 400, errors.array()));
   }
 
