@@ -1,7 +1,12 @@
+import React from 'react';
+import SignupCard from '../components/signup/SignupCard';
+
 const SignupPage = () => {
   return (
-    <div>SignupPage</div>
-  )
-}
+    <div className="min-h-screen flex items-center justify-center">
+      <SignupCard />
+    </div>
+  );
+};
 
-export default SignupPage
+export default SignupPage;
