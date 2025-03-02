@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Loader } from 'lucide-react';
+import { User, Mail, Lock, Loader } from 'lucide-react';
 
-import FormInput from '../FormInput';
+import FormInput from '../inputs/FormInput.jsx';
+import PasswordStrengthMeter from "../PasswordStrengthMeter.jsx";
 
-import { useAuthStore } from "../../store/AuthStore";
+import { useAuthStore } from "../../store/AuthStore.js";
+import { useNavigate } from 'react-router-dom'
 
-const LoginForm = () => {
+const SignupForm = () => {
   const [formData, setFormData] = useState({
+    fullName: '',
     email: '',
     password: ''
   });
 
-  const { login, isLoading } = useAuthStore();
+  const { signup, isLoading } = useAuthStore();
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,18 +26,37 @@ const LoginForm = () => {
     }));
   };
 
-  const handleLogin = async (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     try {
-      await login(formData.email, formData.password);
+      const response = await signup(formData.fullName, formData.email, formData.password);
+      if (response) {
+        navigate('/login');
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
   return (
-    <form className="w-full" onSubmit={handleLogin}>
+    <form className="w-full" onSubmit={handleSignUp}>
+      <FormInput
+        icon={<User/>}
+        type="text"
+        name="fullName"
+        placeholder="Full Name"
+        pattern="[A-Za-z\s]+"
+        minlength="3"
+        maxlength="30"
+        required='required'
+        title="Must be more than 3 and less than 30 characters, including only letters."
+        validatorHint='Enter valid full name.'
+        validatorHidden='hidden'
+        onChange={handleChange}
+        disabled={isLoading}
+      />
+
       <FormInput
         icon={<Mail/>}
         type="email"
@@ -59,14 +83,16 @@ const LoginForm = () => {
         onChange={handleChange}
         disabled={isLoading}
       />
+
+      <PasswordStrengthMeter password={formData.password} />
       <div className="form-control pt-6">
         {isLoading ?
           <Loader className=' animate-spin mx-auto' size={24} /> :
-          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Log in</button>
+          <button className="btn btn-base btn-outline rounded-md shadow-xl" type="submit">Sign up</button>
         }
       </div>
     </form>
   );
 };
 
-export default LoginForm;
+export default SignupForm;

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { Loader } from 'lucide-react'
 
-import VerifyEmailInputBox from './VerifyEmailInputBox';
+import DigitInputBox from '../inputs/DigitInputBox.jsx';
 
-import { useAuthStore } from "../../store/AuthStore";
+import { useAuthStore } from "../../store/AuthStore.js";
 import { useNavigate } from 'react-router-dom'
 
 const VerifyEmailForm = () => {
@@ -49,7 +49,7 @@ const VerifyEmailForm = () => {
 
   return (
     <form className="w-full" onSubmit={handleEmailVerify}>
-      <VerifyEmailInputBox
+      <DigitInputBox
         code={verificationCode}
         onCodeChange={handleCodeChange}
       />

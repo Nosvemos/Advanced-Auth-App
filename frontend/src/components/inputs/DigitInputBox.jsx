@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 
-const VerifyEmailInputBox = ({ code, onCodeChange }) => {
+const DigitInputBox = ({ code, onCodeChange }) => {
   const inputRefs = useRef([]);
 
   const handleChange = (index, e) => {
@@ -63,4 +63,4 @@ const VerifyEmailInputBox = ({ code, onCodeChange }) => {
   );
 };
 
-export default VerifyEmailInputBox;
+export default DigitInputBox;

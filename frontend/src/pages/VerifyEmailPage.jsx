@@ -1,12 +1,30 @@
 import React from 'react';
-import VerifyEmailCard from '../components/verify-email/VerifyEmailCard';
 
- const VerifyEmailPage = () => {
+import { useAuthStore } from '../store/AuthStore.js'
+
+import VerifyEmailForm from '../components/forms/VerifyEmailForm.jsx'
+import Card from '../components/Card.jsx'
+
+const VerifyEmailPage = () => {
+  const { user, resendEmail } = useAuthStore();
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <VerifyEmailCard />
+      <Card
+        Title="Verify Email"
+        Form={<VerifyEmailForm />}
+      >
+        <p className="text-center">
+          <span>Did not you get an e-mail?</span>
+          <button
+            className="link rounded-md shadow-xl ml-1"
+            onClick={() => resendEmail(user?.email)}
+          >
+            Resend email
+          </button>
+        </p>
+      </Card>
     </div>
-  )
+  );
 }
 
 export default VerifyEmailPage;

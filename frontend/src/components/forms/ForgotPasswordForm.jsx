@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Loader } from 'lucide-react';
 
-import FormInput from '../FormInput';
+import FormInput from '../inputs/FormInput.jsx';
 
-import { useAuthStore } from "../../store/AuthStore";
+import { useAuthStore } from "../../store/AuthStore.js";
 
 const ForgotPasswordForm = () => {
   const [formData, setFormData] = useState({

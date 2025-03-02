@@ -3,9 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Lock, Loader } from 'lucide-react';
 import { toast } from 'react-toastify'
 
-import FormInput from '../FormInput';
+import FormInput from '../inputs/FormInput.jsx';
 
-import { useAuthStore } from "../../store/AuthStore";
+import { useAuthStore } from "../../store/AuthStore.js";
 import PasswordStrengthMeter from '../PasswordStrengthMeter.jsx'
 
 const ResetPasswordCard = () => {

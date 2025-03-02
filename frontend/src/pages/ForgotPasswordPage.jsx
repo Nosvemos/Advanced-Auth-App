@@ -1,10 +1,17 @@
 import React from 'react';
-import ForgotPasswordCard from '../components/forgot-password/ForgotPasswordCard';
+import ForgotPasswordForm from '../components/forms/ForgotPasswordForm.jsx'
+import Card from '../components/Card.jsx'
 
 const ForgotPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <ForgotPasswordCard />
+      <Card
+        Form= {<ForgotPasswordForm />}
+        Title= 'Forgot Password'
+        Span1= 'Did you remember your password ?'
+        Link1= './login'
+        LinkText1= 'Log in'
+      />
     </div>
   );
 };

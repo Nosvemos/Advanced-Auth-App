@@ -1,10 +1,14 @@
 import React from 'react';
-import ResetPasswordCard from '../components/reset-password/ResetPasswordCard';
+import ResetPasswordForm from '../components/forms/ResetPasswordForm.jsx'
+import Card from '../components/Card.jsx'
 
 const ResetPasswordPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <ResetPasswordCard />
+      <Card
+        Form= {<ResetPasswordForm />}
+        Title= 'Reset Password'
+      />
     </div>
   );
 };
