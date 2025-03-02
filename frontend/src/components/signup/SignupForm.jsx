@@ -5,6 +5,7 @@ import FormInput from '../FormInput.jsx';
 import PasswordStrengthMeter from "../PasswordStrengthMeter.jsx";
 
 import { useAuthStore } from "../../store/AuthStore";
+import { useNavigate } from 'react-router-dom'
 
 const SignupForm = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +16,8 @@ const SignupForm = () => {
 
   const { signup, isLoading } = useAuthStore();
 
+  const navigate = useNavigate();
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -27,7 +30,10 @@ const SignupForm = () => {
     e.preventDefault();
 
     try {
-      await signup(formData.fullName, formData.email, formData.password);
+      const response = await signup(formData.fullName, formData.email, formData.password);
+      if (response) {
+        navigate('/login');
+      }
     } catch (error) {
       console.error(error);
     }

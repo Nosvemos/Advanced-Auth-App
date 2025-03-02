@@ -5,12 +5,15 @@ import { Loader } from 'lucide-react'
 import VerifyEmailInputBox from './VerifyEmailInputBox';
 
 import { useAuthStore } from "../../store/AuthStore";
+import { useNavigate } from 'react-router-dom'
 
 const VerifyEmailForm = () => {
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const [isComplete, setIsComplete] = useState(false);
 
   const { verifyEmail, isLoading } = useAuthStore();
+
+  const navigate = useNavigate();
 
   const handleCodeChange = (newCode) => {
     setVerificationCode(newCode);
@@ -35,7 +38,10 @@ const VerifyEmailForm = () => {
     }
 
     try {
-      await verifyEmail(code);
+      const response = await verifyEmail(code);
+      if (response) {
+        navigate('/');
+      }
     } catch (error) {
       console.error(error);
     }

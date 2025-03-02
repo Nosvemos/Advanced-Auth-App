@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Lock, Loader } from 'lucide-react';
 import { toast } from 'react-toastify'
 
@@ -17,6 +17,8 @@ const ResetPasswordCard = () => {
 
   const { resetPassword, isLoading } = useAuthStore();
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -33,7 +35,10 @@ const ResetPasswordCard = () => {
     }
 
     try {
-      await resetPassword(token, formData.password, formData.confirmPassword);
+      const response = await resetPassword(token, formData.password, formData.confirmPassword);
+      if (response) {
+        navigate('/login');
+      }
     } catch (error) {
       console.error(error);
     }

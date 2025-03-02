@@ -16,6 +16,7 @@ export const useAuthStore = create((set, get) => ({
       const response = await axiosInstance.post(`/auth/signup`, { fullName, email, password });
       set({ user: response.data.user, isAuthenticated: true, isLoading: false });
       toast.success('Your account created successfully, please verify your email.');
+      return response?.data.success;
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -55,6 +56,7 @@ export const useAuthStore = create((set, get) => ({
       const response = await axiosInstance.post(`/auth/verify-email`, { code });
       set({ user: response.data.user, isAuthenticated: true });
       toast.success('Your email verified successfully.');
+      return response?.data.success;
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -89,8 +91,9 @@ export const useAuthStore = create((set, get) => ({
   resetPassword: async (token, password, confirmPassword) => {
     set({ isLoading: true });
     try {
-      await axiosInstance.post(`/auth/reset-password/${token}`, { password, confirmPassword });
+      const response = await axiosInstance.post(`/auth/reset-password/${token}`, { password, confirmPassword });
       toast.success('Your password has been changed successfully.');
+      return response?.data.success;
     } catch (error) {
       toast.error(error.response.data.message);
     } finally {
@@ -101,7 +104,7 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     set({ isCheckingAuth: true });
     try {
-      const response = await axiosInstance.get(`/auth/check-auth`);
+      await axiosInstance.get(`/auth/check-auth`);
       set({ user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
     } catch (error) {
       set({ isCheckingAuth: false, isAuthenticated: false });
